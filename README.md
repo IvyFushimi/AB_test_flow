@@ -4,7 +4,7 @@
 
 
 
-# Quickly beginning: Design a AB-test as a Professional Analyist.
+# Quick Business AB: Design a AB-test Like a Data Analyst.
 
 View the app in AI Studio: https://ai.studio/apps/e41eb140-ea79-4462-9c72-f603f604e3a3
 
