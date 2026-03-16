@@ -1,5 +1,5 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/IvyFushimi/AB_test_flow/blob/main/git_cover.png" />
+<img width="1200" height="600" alt="GHBanner" src="https://github.com/IvyFushimi/AB_test_flow/blob/main/git_cover.png" />
 </div>
 
 
