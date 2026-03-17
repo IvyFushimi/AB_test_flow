@@ -12,6 +12,8 @@
 
 View the app in AI Studio: https://ai.studio/apps/e41eb140-ea79-4462-9c72-f603f604e3a3
 
+(Due to the update of Google AI Studio, a usable web app is waiting to be released.)
+
 ## Sample
 
 Q：最近微信会员商城开卡率有点低，设计一个实验分析一下。
