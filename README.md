@@ -4,7 +4,7 @@
 
 
 
-# Quick Business AB: Design a AB-test Like a Data Analyst.
+# Quick Business AB: Design a AB-test Like Data Analysts.
 
 <div align="center">
 <img width="1100" height="500" alt="GHBanner" src="https://github.com/IvyFushimi/AB_test_flow/blob/main/app_page.png" />
