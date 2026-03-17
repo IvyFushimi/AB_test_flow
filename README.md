@@ -12,7 +12,7 @@ View the app in AI Studio: https://ai.studio/apps/e41eb140-ea79-4462-9c72-f603f6
 <img width="1100" height="500" alt="GHBanner" src="https://github.com/IvyFushimi/AB_test_flow/blob/main/app_page.png" />
 </div
 
-## Use Sample
+# Use Sample
 
 Q：最近微信会员商城开卡率有点低，设计一个实验分析一下。
 
