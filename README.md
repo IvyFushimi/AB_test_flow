@@ -6,13 +6,13 @@
 
 # Quick Business AB: Design a AB-test Like a Data Analyst.
 
-View the app in AI Studio: https://ai.studio/apps/e41eb140-ea79-4462-9c72-f603f604e3a3
-
 <div align="center">
 <img width="1100" height="500" alt="GHBanner" src="https://github.com/IvyFushimi/AB_test_flow/blob/main/app_page.png" />
 </div
 
-# Use Sample
+View the app in AI Studio: https://ai.studio/apps/e41eb140-ea79-4462-9c72-f603f604e3a3
+
+## Sample
 
 Q：最近微信会员商城开卡率有点低，设计一个实验分析一下。
 
@@ -20,7 +20,6 @@ A：针对“微信会员商城开卡率低”的业务痛点，作为数据产�
 
 由于您未提供具体的干预策略，本方案将基于最常见且高效的解法——**“权益外显优化（降阻力）”与“新人开卡礼（增动力）”**，为您输出一份完整、严谨的 A/B 实验设计方案。
 
----
 
 ### 一、 指标体系设计 (Metrics Design)
 
@@ -36,15 +35,11 @@ A：针对“微信会员商城开卡率低”的业务痛点，作为数据产�
 *   **单用户获客成本 (CAC - Customer Acquisition Cost)**：如果实验包含发券，需监控拉新成本是否在业务可承受的毛利模型内。
 *   **7日内会员首单转化率 (7-Day Member Activation Rate)**：防止引来大量“羊毛党”（只领开卡礼但不消费）。如果开卡率暴增但首单转化率暴跌，说明引入了低质量流量，策略需重新评估。
 
----
-
 ### 二、 实验对象与人群 (Target Audience)
 
 *   **人群圈选**：**历史未开卡用户（非会员）**。已是会员的用户需在分流前置条件中被过滤，不参与实验。
 *   **设备/渠道端**：微信小程序端（或微信公众号H5商城端）。
 *   **用户状态**：处于登录/半登录状态（已获取 OpenID/UnionID），且具备正常交互行为的真实用户（需剔除黑产/风控异常用户）。
-
----
 
 ### 三、 核心实验设计 (Experiment Design Specifications)
 
