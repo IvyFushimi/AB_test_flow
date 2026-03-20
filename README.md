@@ -10,9 +10,7 @@
 <img width="1100" height="500" alt="GHBanner" src="https://github.com/IvyFushimi/AB_test_flow/blob/main/app_page.png" />
 </div
 
-View the app in AI Studio: https://ai.studio/apps/e41eb140-ea79-4462-9c72-f603f604e3a3
-
-(Due to the update of Google AI Studio, a usable web app is waiting to be released.)
+View the app in AI Studio: https://a-b-test-design-260496318048.us-west1.run.app/
 
 ## Sample
 
