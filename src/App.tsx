@@ -30,6 +30,14 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // History & Settings State
+  const [history, setHistory] = useState<{id: string, input: string, result: string, date: string}[]>(() => {
+    const saved = localStorage.getItem('ab_test_history');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [showHistory, setShowHistory] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+
   // Calculator State
   const [showCalc, setShowCalc] = useState(false);
   const [calcType, setCalcType] = useState<'absolute' | 'rate'>('rate');
@@ -37,11 +45,35 @@ export default function App() {
     sigma: '',
     delta: '',
     pa: '',
-    pb: ''
+    pb: '',
+    confidence: '95',
+    power: '80'
   });
 
+  const getZAlpha = (confidence: number) => {
+    // Mapping for common confidence levels (1 - alpha/2)
+    if (confidence >= 99) return 2.576;
+    if (confidence >= 95) return 1.96;
+    if (confidence >= 90) return 1.645;
+    if (confidence >= 85) return 1.44;
+    return 1.96; // Default to 95%
+  };
+
+  const getZBeta = (power: number) => {
+    // Mapping for common power levels (1 - beta)
+    if (power >= 99) return 2.326;
+    if (power >= 95) return 1.645;
+    if (power >= 90) return 1.282;
+    if (power >= 85) return 1.036;
+    if (power >= 80) return 0.842;
+    return 0.842; // Default to 80%
+  };
+
   const calculateSampleSize = () => {
-    const constant = Math.pow(1.96 + 0.84, 2); // 7.84
+    const zAlpha = getZAlpha(parseFloat(calcInputs.confidence));
+    const zBeta = getZBeta(parseFloat(calcInputs.power));
+    const constant = Math.pow(zAlpha + zBeta, 2);
+
     if (calcType === 'absolute') {
       const sigma = parseFloat(calcInputs.sigma);
       const delta = parseFloat(calcInputs.delta);
@@ -71,6 +103,18 @@ export default function App() {
       }
       const design = await generateABTestDesign(finalPrompt);
       setResult(design || '未能生成设计方案，请重试。');
+      
+      if (design) {
+        const newHistoryItem = {
+          id: Date.now().toString(),
+          input: input,
+          result: design,
+          date: new Date().toLocaleString()
+        };
+        const updatedHistory = [newHistoryItem, ...history].slice(0, 20); // Keep last 20
+        setHistory(updatedHistory);
+        localStorage.setItem('ab_test_history', JSON.stringify(updatedHistory));
+      }
     } catch (err) {
       console.error(err);
       setError('生成过程中发生错误，请检查网络或 API 配置。');
@@ -91,11 +135,17 @@ export default function App() {
             <h1 className="font-semibold text-lg tracking-tight">A/B Test Architect</h1>
           </div>
           <div className="flex items-center gap-4 text-sm font-medium text-black/60">
-            <button className="hover:text-black transition-colors flex items-center gap-1.5">
+            <button 
+              onClick={() => setShowHistory(true)}
+              className="hover:text-black transition-colors flex items-center gap-1.5"
+            >
               <History className="w-4 h-4" />
               历史记录
             </button>
-            <button className="hover:text-black transition-colors flex items-center gap-1.5">
+            <button 
+              onClick={() => setShowSettings(true)}
+              className="hover:text-black transition-colors flex items-center gap-1.5"
+            >
               <Settings2 className="w-4 h-4" />
               设置
             </button>
@@ -208,6 +258,36 @@ export default function App() {
                     )}
                   </div>
 
+                  {/* Advanced Stats Settings */}
+                  <div className="grid grid-cols-2 gap-4 pt-2 border-t border-black/[0.03]">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold uppercase text-black/40">置信水平 (%)</label>
+                      <select 
+                        value={calcInputs.confidence}
+                        onChange={(e) => setCalcInputs({...calcInputs, confidence: e.target.value})}
+                        className="w-full p-2 bg-white border border-black/5 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-black/10 appearance-none"
+                      >
+                        <option value="99">99% (α=0.01)</option>
+                        <option value="95">95% (α=0.05)</option>
+                        <option value="90">90% (α=0.10)</option>
+                        <option value="85">85% (α=0.15)</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold uppercase text-black/40">统计功效 (%)</label>
+                      <select 
+                        value={calcInputs.power}
+                        onChange={(e) => setCalcInputs({...calcInputs, power: e.target.value})}
+                        className="w-full p-2 bg-white border border-black/5 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-black/10 appearance-none"
+                      >
+                        <option value="95">95% (β=0.05)</option>
+                        <option value="90">90% (β=0.10)</option>
+                        <option value="85">85% (β=0.15)</option>
+                        <option value="80">80% (β=0.20)</option>
+                      </select>
+                    </div>
+                  </div>
+
                   <div className="pt-3 border-t border-black/5 flex items-center justify-between">
                     <span className="text-xs font-medium text-black/40">每组最少样本量:</span>
                     <span className="text-lg font-bold text-black">
@@ -215,7 +295,7 @@ export default function App() {
                     </span>
                   </div>
                   <p className="text-[10px] text-black/30 leading-tight">
-                    * 基于 α=0.05, β=0.2 (Power=0.8) 计算。生成方案时将自动包含此数据。
+                    * 自动引用 Z-score 映射。生成方案时将包含置信度与功效参数。
                   </p>
                 </div>
               )}
@@ -308,6 +388,83 @@ export default function App() {
           </div>
         </div>
       </main>
+
+      {/* History Slide-over */}
+      {showHistory && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowHistory(false)} />
+          <div className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+            <div className="p-6 border-b border-black/5 flex items-center justify-between">
+              <h2 className="font-bold text-lg">实验历史</h2>
+              <button onClick={() => setShowHistory(false)} className="p-2 hover:bg-black/5 rounded-full transition-colors">
+                <Settings2 className="w-5 h-5 rotate-45" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {history.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-black/30 space-y-2">
+                  <History className="w-12 h-12 opacity-20" />
+                  <p>暂无历史记录</p>
+                </div>
+              ) : (
+                history.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setInput(item.input);
+                      setResult(item.result);
+                      setShowHistory(false);
+                    }}
+                    className="w-full text-left p-4 rounded-xl border border-black/5 hover:border-black/20 hover:bg-black/[0.02] transition-all group"
+                  >
+                    <div className="text-[10px] font-bold uppercase text-black/40 mb-1">{item.date}</div>
+                    <div className="text-sm font-medium line-clamp-2 text-black/80 group-hover:text-black">{item.input}</div>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Settings Modal */}
+      {showSettings && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowSettings(false)} />
+          <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl p-8 animate-in zoom-in-95 duration-200">
+            <h2 className="font-bold text-xl mb-6">应用设置</h2>
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-black/40">数据管理</h3>
+                <button 
+                  onClick={() => {
+                    if (confirm('确定要清除所有历史记录吗？')) {
+                      setHistory([]);
+                      localStorage.removeItem('ab_test_history');
+                      setShowSettings(false);
+                    }
+                  }}
+                  className="w-full py-3 px-4 rounded-xl border border-red-100 text-red-600 text-sm font-semibold hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+                >
+                  清除历史记录
+                </button>
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-black/40">关于</h3>
+                <p className="text-xs text-black/60 leading-relaxed">
+                  A/B Test Architect 是一款专业的实验设计辅助工具，旨在帮助产品经理和数据科学家快速构建严谨的实验方案。
+                </p>
+              </div>
+            </div>
+            <button 
+              onClick={() => setShowSettings(false)}
+              className="mt-8 w-full py-3 bg-black text-white rounded-xl font-bold hover:bg-black/90 transition-all"
+            >
+              完成
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,89 +1,20 @@
 <div align="center">
-<img width="1200" height="600" alt="GHBanner" src="https://github.com/IvyFushimi/AB_test_flow/blob/main/git_cover.png" />
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
+# Run and deploy your AI Studio app
+
+This contains everything you need to run your app locally.
+
+View your app in AI Studio: https://ai.studio/apps/e41eb140-ea79-4462-9c72-f603f604e3a3
+
+## Run Locally
+
+**Prerequisites:**  Node.js
 
 
-# Quick Business AB: Design a AB-test Like Data Analysts.
-
-<div align="center">
-<img width="1100" height="500" alt="GHBanner" src="https://github.com/IvyFushimi/AB_test_flow/blob/main/app_page.png" />
-</div
-
-View the app in AI Studio: https://a-b-test-design-260496318048.us-west1.run.app/ (Please open it in Google)
-
-## Sample
-
-Q：游戏新版本上线一周后DAU下降10%，问题可能出在大部分用户新主线完成速度过快，针对这个问题怎么解决？
-
-A：针对游戏新版本上线一周后 DAU 暴跌 10% 的紧急情况，这是一个典型的“内容消耗过快导致目标感缺失”的问题。在游戏运营中，玩家处于“长草期”（无新内容可玩）极易流失。
-
-为了解决这个问题，业务侧通常有两种干预方向：**一是“降速”（卡进度/增加消耗成本），二是“开源”（通关后增加重复可玩内容）**。
-
-作为数据科学家和产品经理，我为您设计了如下 A/B 测试方案，以科学评估哪种策略能在控制负面体验的同时，最大化挽回 DAU。
-
----
-
-## 一、 指标体系设计 (Metrics Design)
-
-在面临 DAU 整体下跌时，我们的实验指标必须聚焦于“留存”和“活跃时长”。
-
-### 1. 核心指标 (OEC - Overall Evaluation Criterion)
-*   **新主线参与者的次日留存率 & 7日留存率 (D1 & D7 Retention Rate)**：
-    *   *定义*：触发实验分流后，第 1 天和第 7 天再次登录游戏的玩家比例。
-    *   *逻辑*：这是决定实验成败的绝对核心。我们需要观察干预手段是否能有效拉长玩家的活跃生命周期。
-*   **人均单日主线推进进度 (Average Storyline Progression per Day)**：
-    *   *定义*：玩家每天完成的新主线任务数量或章节数。
-    *   *逻辑*：直接验证我们的“降速”策略是否生效，衡量内容消耗速率。
-
-### 2. 安全带指标/护栏指标 (Guardrail Metrics)
-*   **核心节点流失率 (Churn Rate at Gating Nodes)**：如果采用卡等级或增加难度的策略，绝对不能导致玩家因为“打不过”或“卡得太难受”而产生“暴怒流失（Rage Quit）”。需监控卡点位置的跳出率。
-*   **ARPU / ARPPU (日均每用户/每付费用户收益)**：限制进度可能会降低玩家为了通关而购买体力、抽卡、买装备的冲动。必须确保商业化收入没有显著恶化。
-*   **客服投诉率 & 社区负面声量 (CS Tickets & Social Sentiment)**：游戏玩家对“暗改”或“卡进度”极其敏感。需监控实验期间相关维度的客诉量增幅。
-
----
-
-## 二、 实验对象与人群 (Target Audience)
-
-*   **特定圈层用户**：**绝不能是全量用户。**
-*   **入组条件**：
-    1.  已更新至最新版本；
-    2.  **当前主线进度刚好到达新版本新增主线的起点**（排除新玩家，因为他们还没碰到这个问题；排除已经通关新主线的玩家，因为干预对他们已无效）。
-*   **设备端**：全端（iOS/Android/PC互通端），但需确保同一账号跨端数据打通。
-
----
-
-## 三、 核心实验设计 (Experiment Design Specifications)
-
-### 1. 分组策略 (A/B/n 多组测试)
-为了找到最优解，建议采用 **A/B/C/D 四组测试**，同时保留纯净对照组：
-*   **Group A (纯净对照组 - Holdout)**：维持现状，不干预，玩家可以自由、快速地推完主线。
-*   **Group B (数值卡点组 - Level/Resource Gating)**：提升新主线中后期的解锁条件（例如：需要达到特定账号等级、或需要消耗特定日常副本产出的材料）。*目的：强制玩家去玩日常/支线任务。*
-*   **Group C (时间卡点组 - Time Gating)**：采用“现实时间解锁”机制，例如每天最多只能解锁 2 个新章节。*目的：硬性拉长内容消耗天数。*
-*   **Group D (通关后置玩法组 - Post-Story Loop)**：主线消耗速度不干预（同A组），但在主线通关后，立刻解锁一个“高收益、可重复刷”的限时活动（如：主线Boss挑战赛、积分排行榜等）。*目的：不抑制爽感，但提供通关后的新目标。*
-
-### 2. 流量分配与样本量
-*   **流量分配**：考虑到 DAU 已经下降 10%，全局风险极高，不建议大流量测试。建议分配 **20% 的符合条件用户**进入实验，每组均分 **5%** 的流量。
-*   **样本量预估 (MDE考量)**：
-    *   *需要业务方提供*：当前新版本受众的基线 7 日留存率（假设为 40%），以及预期的最小显著提升值（MDE，假设希望留存绝对值提升 2%）。
-    *   *通用建议*：在常规游戏 A/B 测试中（Alpha=0.05, Power=0.8），若要检测 2% 的留存率提升，单组样本量通常需要 **15,000 - 25,000 人**。如果 5% 的流量不足以在短期内凑齐该样本量，需适当放大流量至单组 10%。
-
-### 3. 分流单位 (Randomization Unit)
-*   **按 用户ID (Account ID) 分流**。
-*   *原因*：现代游戏玩家多设备混用（如白天手机刷日常，晚上电脑推主线）非常普遍。按设备 ID 分流会导致同一玩家在不同设备上体验到不同的主线解锁机制，引发严重的 Bug 和客诉。
-
-### 4. 分流触发方式 (Trigger Mechanism)
-*   **行为触发 (Event-based Trigger)**：当玩家**接取新版本第一批主线任务的瞬间**触发分流打标。
-*   *原因*：只有真正开始体验新主线的玩家，其后续行为变化才有统计学意义。如果在登录时就打标，会混入大量只登录不推主线的“签到党”，稀释实验效果（即所谓的“稀释效应 Dilution Effect”）。
-
-### 5. 实验周期 (Duration)
-*   **建议周期：至少 14 天（两个完整自然周）**。
-*   *原因*：
-    1.  游戏活跃度有极强的“星期效应”（周末在线时长和推图速度远大于工作日），必须包含完整的周末。
-    2.  我们需要观测 **7日留存率**，14天的测试期能确保即使是最后一天入组的玩家，也能收集到完整的 D7 留存数据。
-
-### 6. 预算与成本评估 (Budget & Cost)
-保持高度的成本意识，本实验的成本主要集中在以下几块：
-*   **显性研发成本**：Group B 和 Group C 需要修改任务解锁逻辑，Group D 成本最高，需要配置一个新的排行榜或挑战活动。建议 Group D 优先复用游戏内已有的活动模板进行换皮，以压缩 R&D 成本。
-*   **隐性客诉成本与公关风险**：Group B（降数值）和 Group C（卡时间）极易引发玩家在 NGA、贴吧、微博等社区的炎上（负面舆论）。
-*   **补偿预算 (Mitigation Budget)**：必须提前向运营和财务申请一笔“全服补偿预算”。一旦 B/C 组引发舆情，或者实验结束后将全服策略统一为最优解时，需要发放全服邮件补偿（如：发放抽卡券、体力药水等虚拟道具），以平息玩家对“测试服待遇不同”的不满。虚拟道具边际成本虽低，但会消耗部分未来的充值潜力。
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
