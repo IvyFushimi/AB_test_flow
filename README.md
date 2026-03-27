@@ -1,20 +1,17 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/IvyFushimi/AB_test_flow/blob/main/git_cover.png" />
 </div>
 
 # Run and deploy your AI Studio app
 
-This contains everything you need to run your app locally.
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/IvyFushimi/AB_test_flow/blob/main/app_page.png" />
+</div>
 
-View your app in AI Studio: https://ai.studio/apps/e41eb140-ea79-4462-9c72-f603f604e3a3
+View app: https://ab-test-flow-j61d.vercel.app/
 
-## Run Locally
+## Sample
 
-**Prerequisites:**  Node.js
+Q：游戏新版本上线后一周DAU下降10%，推测可能是玩家在开服后快速推完主线进入长草期，上线次数下降。怎么设计实验验证可行的改进方法？
 
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+A：
