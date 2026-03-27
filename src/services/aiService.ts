@@ -22,7 +22,11 @@ const SYSTEM_PROMPT = `你是一位资深的数据科学家和数据产品经理
 语气需专业、客观、具有业务导向。始终保持“成本意识”。`;
 
 export async function generateABTestDesign(scenario: string) {
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+  // 无论 AI Studio 给的是什么，统一用这一行读取
+  const apiKey = (import.meta.env?.VITE_GEMINI_API_KEY) || (process.env?.GEMINI_API_KEY) || "";
+
+// 初始化，直接传入刚才拿到的 apiKey
+  const ai = new GoogleGenAI({ apiKey: apiKey });
 
   const result = await ai.models.generateContent({
     model: "gemini-3.1-pro-preview",
